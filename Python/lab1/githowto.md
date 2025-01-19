@@ -433,3 +433,60 @@ On branch main
 Your branch is ahead of 'origin/main' by 6 commits.
   (use "git push" to publish your local commits)
 ```
+
+Now ```hello.html``` consists
+
+```
+<html>
+  <head>
+  </head>
+  <body>
+    <h1>Hello, World!</h1>
+  </body>
+</html>
+```
+---
+# 13. Cancel staged changes (before committing)
+
+## Edit file and stage changes
+
+```
+File: hello.html
+
+<html>
+  <head>
+    <!-- This is an unwanted but staged comment -->
+  </head>
+  <body>
+    <h1>Hello, World!</h1>
+  </body>
+</html>
+
+```
+
+```
+PS C:\PP2Main\work> git status
+On branch main
+Your branch is ahead of 'origin/main' by 6 commits.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   hello.html
+```
+
+## Restore the staging area
+
+``` PS C:\PP2Main\work> git restore --staged hello.html ```
+
+## Restore the workign tree
+
+```
+git restore hello.html
+PS C:\PP2Main\work> git status
+On branch main
+Your branch is ahead of 'origin/main' by 6 commits.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+```
