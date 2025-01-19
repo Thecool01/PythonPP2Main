@@ -1,21 +1,26 @@
 # 1. Git credentials
 ## Setting up name and email address
-```git config --global user.name "Nikolay"```
-```git config --global user.email "my@example.com"```
+```
+git config --global user.name "Nikolay"
+git config --global user.email "my@example.com"
+```
 ---
 # 2. Creating a project
 ## Create a repository
-``` git init ```
-```Initialized empty Git repository in C:/PP2Main/.git/```
+```
+git init
+Initialized empty Git repository in C:/PP2Main/.git/
+```
 
 ## Add the page to the repository
-
-```git add hello.html```
-```warning: in the working copy of 'hello.html', LF will be replaced by CRLF the next time Git touches it```
-```PS C:\PP2Main> git commit -m "Initial Commit"```
-```[main d9a7ce1] Initial Commit```
-```1 file changed, 1 insertion(+)```
-```create mode 100644 hello.html```
+```
+git add hello.html
+warning: in the working copy of 'hello.html', LF will be replaced by CRLF the next time Git touches it
+PS C:\PP2Main> git commit -m "Initial Commit"
+[main d9a7ce1] Initial Commit
+1 file changed, 1 insertion(+)
+create mode 100644 hello.html
+```
 ---
 # 3. Checking the status of the repository
 ## Check the status of the repository
@@ -76,7 +81,6 @@ Changes to be committed:
 #       modified:   hello.html
 #
 ```
----
 ```
 added h1 tag
   (use "git push" to publish your local commits)
@@ -187,7 +191,7 @@ PS C:\PP2Main\work> git commit -m "Added HTML header"
 [main d469c0d] Added HTML header
  1 file changed, 2 insertions(+)
 ```
-
+---
 # 9. History
 
 ```
@@ -251,7 +255,7 @@ ee2fc57 2025-01-19 | Add folder [Nikolay1]
 b5e51dc 2025-01-19 | Add githowto work [Nikolay1]
 d9a7ce1 2025-01-19 | Initial Commit [Nikolay1]
 ```
-
+---
 # 10. Getting older versions
 
 ## Getting hashes of the previous commit
@@ -300,7 +304,7 @@ Now hello.html consists
   </body>
 </html>
 ```
-
+---
 # 11. Tagging versions
 
 ## Creating a tag for the first version
@@ -392,7 +396,7 @@ ee2fc57 2025-01-19 | Add folder [Nikolay1]
 b5e51dc 2025-01-19 | Add githowto work [Nikolay1]
 d9a7ce1 2025-01-19 | Initial Commit [Nikolay1]
 ```
-
+---
 # 12. Discarding local changes (before staging)
 
 ## Change hello.html
