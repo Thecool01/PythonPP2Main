@@ -1,7 +1,6 @@
 import pygame
 import sys
-from Python.lecture9.music.button import Button
-from image_game import Pic
+from button import Button
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -19,9 +18,9 @@ def run():
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption("Test game")
 
-    pygame.mixer.music.load(r"C:\PP2Main\Python\lecture9\Megalo Strike Back.mp3")
+    pygame.mixer.music.load(r"C:\PP2Main\Python\lecture9\music\Megalo Strike Back.mp3")
     pygame.mixer.music.set_volume(0.2)
-    pygame.mixer.music.play(-1)
+    pygame.mixer.music.play()
 
     running = True
     music_paused = True
@@ -46,8 +45,7 @@ def run():
                 music_paused = not music_paused
         screen.fill(yellow)
         button.draw(screen)
-        Pic.output()
-        #pygame.mixer.music.unpause()
+        #pygame.mi xer.music.unpause()
         #pygame.mixer.music.pause()
         #pygame.mixer.music.stop()
         pygame.display.flip()
