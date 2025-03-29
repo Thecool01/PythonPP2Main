@@ -33,13 +33,16 @@ font = pygame.font.SysFont("Leelawadee", 20)
 font_small = pygame.font.SysFont("Leelawadee", 15)
 # Tool buttons
 buttons = {
-    "line":         pygame.Rect(10, 20, 130, 20),
-    "rectangle":    pygame.Rect(10, 45, 130, 20),
-    "circle":       pygame.Rect(10, 70, 130, 20),
-    "eraser":       pygame.Rect(10, 95, 130, 20),
-    "+":            pygame.Rect(50, 115, 30, 20),
-    "-":            pygame.Rect(10, 115, 30, 20),
-    "clear":        pygame.Rect(10, 165, 130, 20),
+    "Line":                     pygame.Rect(10, 20, 130, 20),
+    "Rectangle":                pygame.Rect(10, 45, 130, 20),
+    "Circle":                   pygame.Rect(10, 70, 130, 20),
+    "Square":                   pygame.Rect(10, 95, 130, 20),
+    "Right triangle":           pygame.Rect(10, 95, 130, 20),
+    "Equilateral triangle":     pygame.Rect(10, 95, 130, 20),
+    "Eraser":                   pygame.Rect(10, 95, 130, 20),
+    "+":                        pygame.Rect(50, 115, 30, 20),
+    "-":                        pygame.Rect(10, 115, 30, 20),
+    "Clear":                    pygame.Rect(10, 165, 130, 20),
 }
 
 button_states = {mode: False for mode in buttons} # The status of button(click or not)
@@ -54,6 +57,7 @@ color_buttons = {
 screen.fill(black)
 canva.fill(white)
 
+# All left buttons
 def draw_buttons():
     
     for mode, rect in buttons.items():
@@ -93,7 +97,7 @@ def handle_events():
                         scale += 1
                     elif mode == "-" and scale > 1:
                         scale -= 1
-                    elif mode == "clear":
+                    elif mode == "Clear":
                         canva.fill(white)
                     else:
                         painting_mode = mode
@@ -124,17 +128,17 @@ def handle_events():
                 width = abs(mx - start_pos[0])
                 height = abs(my - start_pos[1])
 
-                if painting_mode == "rectangle":
+                if painting_mode == "Rectangle":
                     pygame.draw.rect(canva, current_color, (min(start_pos[0], mx), min(start_pos[1], my), width, height), scale) # To draw a rectangle correctly in either direction.
 
-                elif painting_mode == "circle":
+                elif painting_mode == "Circle":
                     radius = max(width, height) // 2
                     center = (min(start_pos[0], mx) + width // 2, min(start_pos[1], my) + height // 2) # To draw a circle correctly in either direction.
                     pygame.draw.circle(canva, current_color, center, radius, scale)
                 
             start_pos = None
 
-        
+# Process of painting
 def update():
 
     global last_mouse_pos
@@ -143,14 +147,15 @@ def update():
     mx -= sidebar_width  # Adjust mouse position for the canvas
 
     if mouse_click and last_mouse_pos is not None and mx >= 0:
-        if painting_mode == 'line':
+        if painting_mode == 'Line':
             pygame.draw.line(canva, current_color, last_mouse_pos, (mx, my), scale)
-        elif painting_mode == 'eraser':
+        elif painting_mode == 'Eraser':
             pygame.draw.line(canva, white, last_mouse_pos, (mx, my), scale)
 
     if mouse_click and mx >= 0:
         last_mouse_pos = (mx, my)
 
+# Rendering all parts of the program
 def render():
 
     screen.fill(black)  # Clear the screen
