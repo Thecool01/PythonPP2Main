@@ -37,9 +37,9 @@ buttons = {
     "rectangle":    pygame.Rect(10, 45, 130, 20),
     "circle":       pygame.Rect(10, 70, 130, 20),
     "eraser":       pygame.Rect(10, 95, 130, 20),
-    "+":            pygame.Rect(50, 115, 30, 20),
-    "-":            pygame.Rect(10, 115, 30, 20),
-    "clear":        pygame.Rect(10, 165, 130, 20),
+    "+":            pygame.Rect(50, 240, 30, 20),
+    "-":            pygame.Rect(10, 240, 30, 20),
+    "clear":        pygame.Rect(10, 300, 130, 20),
 }
 
 button_states = {mode: False for mode in buttons} # The status of button(click or not)
@@ -65,7 +65,7 @@ def draw_buttons():
 
     # Display current brush size
     scale_text = font.render(f"Size: {scale}", True, white)
-    screen.blit(scale_text, (10, 250))
+    screen.blit(scale_text, (10, 200))
 
     # Draw color selection buttons
     for color, rect in color_buttons.items():
