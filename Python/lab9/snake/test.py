@@ -136,13 +136,15 @@ while running:
                 apple = spawn_apple()
                 fps = 5
                 score = 0
-                new_level_at = 6
+                new_level_at = 10
                 level = 1
                 size_of_snake = 1
 
                 time_fruit_spawn_time = time.time()  # Reset time for the next fruit
                 time_fruit = spawn_time_fruit()
                 fruits.append(time_fruit)
+
+                pygame.mixer_music.unpause()
     
     direction = change_to
     if alive:
@@ -196,6 +198,7 @@ while running:
         screen.blit(text_gameover, (width // 2 - 80, 845))
         text_restart = font.render(f"Press SPACE to restart", True, WHITE)
         screen.blit(text_restart, (width // 2 - 160, 875))
+        pygame.mixer_music.pause()
     
     # Draw snake and fruits
     for block in snake_body:
@@ -206,13 +209,14 @@ while running:
     pygame.draw.rect(screen, PINK, (time_fruit[0], time_fruit[1], cell_size - 1, cell_size - 1))
     
     #TIMEFRUIT
-    screen.blit(font.render(f"TIME FRUIT: SCORE + 10, SIZE + 4", True, PINK), (300, 10))
+    screen.blit(font.render(f"TIME FRUIT: SCORE + 10, SIZE + 4", True, PINK), (450, 10))
 
     # Display score and level
     screen.blit(font.render(f"Score: {score}", True, WHITE), (5, 10))
     screen.blit(font.render(f"Level: {level}", True, YELLOW), (5, 35))
     screen.blit(font.render(f"Size: {size_of_snake}", True, GREEN), (5, 60))
     screen.blit(font.render(f"Speed: {fps}", True, BLUE), (5, 85))
+    screen.blit(font.render(f"10 scores = New level", True, YELLOW), (130, 35))
 
     # RULES
     screen.blit(font.render(f"Rules:       Size    Score", True, WHITE), (1100, 5))
@@ -232,7 +236,7 @@ while running:
     # Level up logic
     if score >= new_level_at:
         level += 1
-        new_level_at += 6
+        new_level_at += 10
         fps += 0.5
 
         text_new_level = font.render(f"New Level!", True, PINK)
