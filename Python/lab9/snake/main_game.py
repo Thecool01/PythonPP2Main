@@ -155,7 +155,7 @@ while running:
             else:
                 snake_body.pop()
             
-            # Увеличиваем размер тела змейки при съедании фруктов
+            # Increasing the size of the snake after eating
             for _ in range(size_of_snake - len(snake_body)):
                 snake_body.append(snake_body[-1])
 
