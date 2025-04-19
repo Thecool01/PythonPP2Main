@@ -15,6 +15,7 @@ $$
         WHERE name = entered_value;
 $$ LANGUAGE SQL;
 ```
+
 ```
 CREATE FUNCTION find_by_phone(entered_value VARCHAR) RETURNS SETOF contacts AS 
 $$
