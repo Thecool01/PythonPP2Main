@@ -1,17 +1,37 @@
 import pygame
 import random
 import time
+from tabulate import tabulate
 
 from db_commands import *
 
 pygame.init()
 pygame.mixer.init()
-player_nickname, best_score, best_level, initial_size_snake = init_player()
 
-print(f"Loaded player data: {player_nickname},
-      score: {best_score}, 
-      level: {best_level}, 
-      size: {initial_size_snake}")
+
+
+while True:
+    print("---Game Snake Menu---")
+
+    print("1. Start game")
+    print("2. List your scores")
+    print("3. List top of the players")
+
+    choice = input("Enter the command -> ")
+
+    if choice == '1':
+        player_nickname, best_score, best_level, initial_size_snake, last_score = init_player()
+        print(f"Loaded player data: {player_nickname}, score: {best_score},  level: {best_level}, size: {initial_size_snake}")
+        break
+    elif choice == '2':
+        nickname1 = input("Enter your nickname -> ")
+        list_information(nickname1)
+        continue
+    elif choice == '3':
+        top_players()
+        continue
+
+
 time.sleep(0.2)
 
 # Colors
@@ -54,10 +74,13 @@ game_started = False
 # Game variables
 level = best_level
 max_level = 1
-score = 0
-max_score = best_score
+score = last_score
+
 size_of_snake = initial_size_snake
-new_level_at = 6
+if last_score == 0:
+    new_level_at = 6
+else:
+    new_level_at = 6 + (last_score - 1) * 10 # Correcting for saved data
 fruits = []  # The list of all fruits
 walls = []  # List to store wall positions
 
@@ -72,7 +95,6 @@ def draw_time_fruit(time_fruit):
 
     # REMAINING TIME ON FRUIt
     if remaining_time >= 0:
-        
         time_text = font.render(f"{remaining_time}", True, WHITE)
         screen.blit(time_text, (time_fruit[0] + cell_size // 5, time_fruit[1] + cell_size // 5))
 
@@ -108,45 +130,50 @@ def spawn_time_fruit():
 def create_walls_for_level(level):
     walls.clear()
     global fps
-    
+
     if level == 2:
         fps = 5.5
         # Maze-like pattern for higher levels
-        for i in range(1, game_width // cell_size - 1, 4):
-            for j in range(1, game_height // cell_size - 1, 4):
-                if random.random() < 0.05:  # 5% chance to place a wall block
+        for i in range(1, game_width // cell_size - 1, 3):
+            for j in range(1, game_height // cell_size - 1, 3):
+                if (random.random() < 0.05 and 
+                [i*cell_size + game_offset_x, j*cell_size + game_offset_y] not in fruits) :  # 5% chance to place a wall block
                     walls.append([i*cell_size + game_offset_x, j*cell_size + game_offset_y])
 
     if level == 3:
         fps = 6
         # Maze-like pattern for higher levels
-        for i in range(1, game_width // cell_size - 1, 4):
-            for j in range(1, game_height // cell_size - 1, 4):
-                if random.random() < 0.10:  # 10% chance to place a wall block
+        for i in range(1, game_width // cell_size - 1, 3):
+            for j in range(1, game_height // cell_size - 1, 3):
+                if (random.random() < 0.10 and 
+                [i*cell_size + game_offset_x, j*cell_size + game_offset_y] not in fruits):  # 10% chance to place a wall block
                     walls.append([i*cell_size + game_offset_x, j*cell_size + game_offset_y])
     
     if level == 4:
         fps = 6.5
         # Maze-like pattern for higher levels
-        for i in range(1, game_width // cell_size - 1, 4):
-            for j in range(1, game_height // cell_size - 1, 4):
-                if random.random() < 0.15:  # 15% chance to place a wall block
+        for i in range(1, game_width // cell_size - 1, 3):
+            for j in range(1, game_height // cell_size - 1, 3):
+                if (random.random() < 0.15 and 
+                [i*cell_size + game_offset_x, j*cell_size + game_offset_y] not in fruits):  # 15% chance to place a wall block
                     walls.append([i*cell_size + game_offset_x, j*cell_size + game_offset_y])
 
     if level == 5:
         fps = 7
         # Maze-like pattern for higher levels
-        for i in range(1, game_width // cell_size - 1, 4):
-            for j in range(1, game_height // cell_size - 1, 4):
-                if random.random() < 0.20:  # 20% chance to place a wall block
+        for i in range(1, game_width // cell_size - 1, 3):
+            for j in range(1, game_height // cell_size - 1, 3):
+                if (random.random() < 0.20 and 
+                [i*cell_size + game_offset_x, j*cell_size + game_offset_y] not in fruits):  # 20% chance to place a wall block
                     walls.append([i*cell_size + game_offset_x, j*cell_size + game_offset_y])
 
     if level >= 6:
         fps = 7.5
         # Maze-like pattern for higher levels
-        for i in range(1, game_width // cell_size - 1, 4):
-            for j in range(1, game_height // cell_size - 1, 4):
-                if random.random() < 0.25:  # 25% chance to place a wall block
+        for i in range(1, game_width // cell_size - 1, 3):
+            for j in range(1, game_height // cell_size - 1, 3):
+                if (random.random() < 0.25 and 
+                [i*cell_size + game_offset_x, j*cell_size + game_offset_y] not in fruits):  # 25% chance to place a wall block
                     walls.append([i*cell_size + game_offset_x, j*cell_size + game_offset_y])
 
         
@@ -187,9 +214,16 @@ while running:
                 else:
                     pygame.mixer_music.unpause()
             elif event.key == pygame.K_ESCAPE and paused:
+                # Saving data
+                if score > best_score:
+                    best_score = score
+
+                last_score = score
+                save_records(player_nickname, score, level, size_of_snake, last_score)
+
                 running = False
                 # Saving the game
-                save_records(player_nickname, score, level, size_of_snake)
+                
                 
             elif not paused:
             # Changing the direction when typing the key
@@ -201,6 +235,7 @@ while running:
                     change_to = 'RIGHT'
                 elif event.key == pygame.K_LEFT and direction != 'RIGHT':
                     change_to = 'LEFT'
+                
                 elif not alive and event.key == pygame.K_SPACE:
                     # Restart game
                     alive = True
@@ -210,10 +245,15 @@ while running:
                     change_to = direction
                     apple = spawn_apple()
                     fps = 5
+                    if score > best_score: 
+                        best_score = score
+
+                    save_records(player_nickname, best_score, 1, 1, 0)
                     score = 0
                     new_level_at = 10
                     level = 1
                     size_of_snake = 1
+                    
                     walls = []
 
                     create_walls_for_level(level)
@@ -280,14 +320,20 @@ while running:
                 snake_body.append(snake_body[-1])
 
     if not alive:   
+
+        if score > best_score:
+            best_score = score
+        save_records(player_nickname, best_score, 1, 1, 0)
         # Game Over screen
+        
         text_gameover = font.render(f"Game Over!", True, WHITE)
         screen.blit(text_gameover, (width // 2 - 80, 845))
         text_restart = font.render(f"Press SPACE to restart", True, WHITE)
         screen.blit(text_restart, (width // 2 - 160, 875))
         pygame.mixer_music.pause()
+    
+
         
-        save_records_gameover(player_nickname, score, level)
         
     elif paused:
         pause_text = font.render("PAUSED (Press P to continue, ESC to save & quit)", True, WHITE)
@@ -324,12 +370,12 @@ while running:
     screen.blit(font.render(f"Banana:      +3       +5", True, YELLOW_BANANA), (1100, 80))
 
     # Time fruit spawning logic
-    if time.time() - time_fruit_spawn_time >= time_fruit_lifetime and alive:
+    if time.time() - time_fruit_spawn_time >= time_fruit_lifetime and alive and not paused:
         time_fruit = spawn_time_fruit()
         fruits.append(time_fruit)
         time_fruit_spawn_time = time.time()  # Update spawn time for the time fruit
 
-    if time.time() - time_fruit_spawn_time <= time_fruit_lifetime and alive:
+    if time.time() - time_fruit_spawn_time <= time_fruit_lifetime and alive and not paused:
         draw_time_fruit(time_fruit)
 
     # Level up logic
