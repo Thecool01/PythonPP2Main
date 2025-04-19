@@ -6,7 +6,13 @@ from db_commands import *
 
 pygame.init()
 pygame.mixer.init()
-player_nickname, best_score, best_level = init_player()
+player_nickname, best_score, best_level, initial_size_snake = init_player()
+
+print(f"Loaded player data: {player_nickname},
+      score: {best_score}, 
+      level: {best_level}, 
+      size: {initial_size_snake}")
+time.sleep(0.2)
 
 # Colors
 RED = (255, 0, 0)
@@ -50,7 +56,7 @@ level = best_level
 max_level = 1
 score = 0
 max_score = best_score
-size_of_snake = 1
+size_of_snake = initial_size_snake
 new_level_at = 6
 fruits = []  # The list of all fruits
 walls = []  # List to store wall positions
@@ -182,7 +188,9 @@ while running:
                     pygame.mixer_music.unpause()
             elif event.key == pygame.K_ESCAPE and paused:
                 running = False
-                save_records(player_nickname, score, level)
+                # Saving the game
+                save_records(player_nickname, score, level, size_of_snake)
+                
             elif not paused:
             # Changing the direction when typing the key
                 if event.key == pygame.K_UP and direction != 'DOWN':
@@ -271,18 +279,19 @@ while running:
             for _ in range(size_of_snake - len(snake_body)):
                 snake_body.append(snake_body[-1])
 
-    else:   
+    if not alive:   
         # Game Over screen
         text_gameover = font.render(f"Game Over!", True, WHITE)
         screen.blit(text_gameover, (width // 2 - 80, 845))
         text_restart = font.render(f"Press SPACE to restart", True, WHITE)
         screen.blit(text_restart, (width // 2 - 160, 875))
         pygame.mixer_music.pause()
-    
-    if paused:
+        
+        save_records_gameover(player_nickname, score, level)
+        
+    elif paused:
         pause_text = font.render("PAUSED (Press P to continue, ESC to save & quit)", True, WHITE)
         screen.blit(pause_text, (width // 2 - 250, height // 2))
-    
     
     # Draw walls
     for wall in walls:

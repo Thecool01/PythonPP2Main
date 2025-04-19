@@ -10,7 +10,7 @@ def get_player_data(nickname):
 
     config = load_config()
     sql = f"""
-            SELECT nickname, score, level 
+            SELECT nickname, score, level, snake_size 
             FROM snake_records 
             WHERE nickname='{nickname}'
             ORDER BY score DESC
@@ -31,8 +31,8 @@ def get_player_data(nickname):
 def create_new_player(nickname):
 
     config = load_config()
-    sql = """ INSERT INTO snake_records (nickname, score, level)
-            VALUES (%s, 0, 1) """
+    sql = """ INSERT INTO snake_records (nickname, score, level, snake_size)
+            VALUES (%s, 0, 1, 1) """
 
     try:
         with psycopg2.connect(**config) as conn:
@@ -44,24 +44,57 @@ def create_new_player(nickname):
         print(error)
 
 
-def save_records(nickname, score, level):
+def save_records(nickname, score, level, snake_size):
 
     config = load_config()
-    sql1 = f""" UPDATE snake_records SET score='{score}'
-                WHERE nickname='{nickname}' """
-
-    sql2 = f""" UPDATE snake_records SET level='{level}'
-                WHERE nickname='{nickname}' """
+    sql = """ UPDATE snake_records 
+              SET score=%s, level=%s, snake_size=%s
+              WHERE nickname=%s
+              RETURNING nickname
+            """
 
     try:
         with psycopg2.connect(**config) as conn:
             with conn.cursor() as cur:
-                cur.execute(sql1)
-                cur.execute(sql2)
-                print(f"The best results was saved!")
+                cur.execute(sql, (score, level, snake_size, nickname))
+                if cur.fetchone():
+                    conn.commit()
+                    print(f"The best results was saved!")
+                    return True
+                else:
+                    print ("No player found to update")
+                    return False
 
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
+        return False
+
+
+def save_records_gameover(nickname, score, level):
+
+    config = load_config()
+    sql = """ UPDATE snake_records 
+              SET score=%s, level=%s
+              WHERE nickname=%s
+              RETURNING nickname
+            """
+
+    try:
+        with psycopg2.connect(**config) as conn:
+            with conn.cursor() as cur:
+                cur.execute(sql, (score, level, nickname))
+                if cur.fetchone():
+                    conn.commit()
+                    print(f"The best results was saved!")
+                    return True
+                else:
+                    print ("No player found to update")
+                    return False
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+        return False
+        
 
 def init_player():
 
@@ -75,14 +108,12 @@ def init_player():
         print(f"Welcome back, {nickname}!")
         print(f"Your best score: {player_data[1]} and level:{player_data[2]}")
 
-        return player_data[0], player_data[1], player_data[2]
+        return player_data[0], player_data[1], player_data[2], player_data[3]
     else:
         print(f"Welcome new player {nickname}!")
         print(f"Your data was saved!")
-        new_player = create_new_player(nickname)
-        if new_player:
-            return new_player[0], new_player[1], new_player[2]
+        create_new_player(nickname)
+        return nickname, 0, 1, 1
 
     # In case of an error, we simply send the standard data.
-    return nickname, 0, 1 
 

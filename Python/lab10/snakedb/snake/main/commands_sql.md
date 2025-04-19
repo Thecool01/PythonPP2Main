@@ -12,3 +12,7 @@ snakedb-# ;
 ----+----------+-------+-------
 (0 rows)
 ```
+
+``` Не забудь в ставить!
+ALTER TABLE snake_records ADD COLUMN snake_size INTEGER DEFAULT 1;
+```
