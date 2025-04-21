@@ -1,6 +1,7 @@
 import time
 import tabulate
 from db_commands import * 
+from functions import *
 
 def interface():
     # Launching
@@ -18,6 +19,8 @@ def interface():
         print("4. | Insert contact using csv |")
         print("5. | Update the contact using name |")        
         print("6. | Delete the contact using name or phone |")
+
+        print("7. | Functions |")
         print("0. | Quit the program |")
         choice = int(input("Enter the number of the command -> "))
 
@@ -35,7 +38,7 @@ def interface():
 
         elif choice == 3:
             name = input("Enter the name -> ")
-            phone = int(input("Enter the phone number(max 20) -> "))
+            phone = int(input("Enter the phone number(must equal to 11) -> "))
 
             insert_new_contact(name, phone)
 
@@ -70,6 +73,9 @@ def interface():
 
             delete_part(part, value)
             
+        
+        elif choice == 7:
+            functions_interface()
 
         elif choice == 0:
             print("Goodbye!")
